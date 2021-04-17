@@ -9,21 +9,21 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+assign = "1.1.1"
 futures = "0.3"
 graphql_client = "0.9"
 http = "0.2"
 lazy_static = "1.4"
 regex = "1.4"
-rocket = { git = "https://github.com/SergioBenitez/Rocket.git", rev = "8da034ab835ef1d599cd146164dffda960275c06" }
+rocket = { git = "https://github.com/SergioBenitez/Rocket.git", rev = "dd0c036461524c8a8a74a018af312eea56afae9e" }
 ron = "0.6"
-ruma = { git = "https://github.com/ruma/ruma", rev = "0f64a6e", features = ["client-api", "unstable-pre-spec"] }
-ruma-client = { git = "https://github.com/ruma/ruma", rev = "0f64a6e" }
+ruma = { version = "0.0.3", features = ["client-api-c", "unstable-pre-spec"] }
+ruma-client = "0.5.0-alpha.2"
 thiserror = "1.0"
 toml = "0.5"
 tracing = "0.1"
 tracing-subscriber = "0.2"
 uom = "0.31"
-assign = "1.1"
 serde_json = "1.0"
 hmac = "0.10"
 sha2 = "0.9"
@@ -31,12 +31,12 @@ hex-literal = "0.3"
 hex = "0.4.2"
 
 [dependencies.reqwest]
-version = "0.10"
+version = "0.11.3"
 features = ["json"]
 
 [dependencies.rocket_contrib]
 git = "https://github.com/SergioBenitez/Rocket.git"
-rev = "8da034ab835ef1d599cd146164dffda960275c06"
+rev = "dd0c036461524c8a8a74a018af312eea56afae9e"
 default-features = false
 features = ["json"]
 
@@ -45,5 +45,5 @@ version = "1.0"
 features = ["derive"]
 
 [dependencies.tokio]
-version = "0.2"
+version = "1.5.0"
 features = ["signal", "macros"]

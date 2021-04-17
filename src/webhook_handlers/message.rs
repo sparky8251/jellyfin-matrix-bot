@@ -64,10 +64,10 @@ pub enum MessageError {
 }
 
 #[rocket::async_trait]
-impl<'a, 'r> FromRequest<'a, 'r> for MessageToken {
+impl<'r> FromRequest<'r> for MessageToken {
     type Error = MessageError;
 
-    async fn from_request(req: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+    async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
         if req.headers().contains("X-Webhook-Token") {
             let token = req.headers().get_one("X-Webhook-Token").unwrap();
             request::Outcome::Success(MessageToken(token.to_string()))

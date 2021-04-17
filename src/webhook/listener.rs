@@ -1,7 +1,7 @@
 use crate::config::{Config, WebhookListenerConfig};
 use crate::messages::MatrixMessage;
 use crate::webhook_handlers::register_handlers;
-use rocket::config::{self, Environment, LoggingLevel};
+use rocket::config::{Config as RocketConfig, LogLevel};
 use tokio::sync::mpsc::Sender;
 
 pub struct WebhookListener {
@@ -18,10 +18,12 @@ impl WebhookListener {
     }
 
     pub async fn start(self) {
-        let rocket_config = config::Config::build(Environment::Production)
-            .log_level(LoggingLevel::Off)
-            .port(33333)
-            .unwrap();
+        let rocket_config = RocketConfig {
+            log_level: LogLevel::Off,
+            port: 33333,
+            ..RocketConfig::release_default()
+        };
+
         let rocket = rocket::custom(rocket_config);
         match register_handlers(rocket)
             .manage(self.send)

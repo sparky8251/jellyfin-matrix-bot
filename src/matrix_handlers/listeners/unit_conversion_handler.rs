@@ -4,17 +4,21 @@ use crate::helpers::convert_unit;
 use crate::helpers::MatrixNoticeResponse;
 use crate::messages::{MatrixMessage, MatrixMessageType};
 use crate::regex::UNIT_CONVERSION;
-use ruma::{events::room::message::TextMessageEventContent, RoomId};
+use ruma::{
+    events::room::message::{Relation, TextMessageEventContent},
+    RoomId,
+};
 use tokio::sync::mpsc::Sender;
 use tracing::{debug, error};
 
 /// Command based unit conversion handler that will parse, generate a response body, and send it
 pub(super) async fn unit_conversion_handler(
     text: &TextMessageEventContent,
+    relates_to: Option<&Relation>,
     room_id: &RoomId,
     send: &mut Sender<MatrixMessage>,
 ) {
-    if text.relates_to.is_none() && text.formatted.is_none() {
+    if relates_to.is_none() && text.formatted.is_none() {
         let mut conversions = Vec::new();
         for cap in UNIT_CONVERSION.captures_iter(&text.body.to_lowercase()) {
             conversions.push((cap[1].to_string(), cap[2].to_string()));

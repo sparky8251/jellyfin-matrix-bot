@@ -13,7 +13,10 @@ use crate::regex::{GITHUB_SEARCH, GROUP_PING, LINK_URL, UNIT_CONVERSION};
 use github_search::github_search;
 use group_ping::group_ping;
 use link_url::link_url;
-use ruma::{events::room::message::TextMessageEventContent, RoomId, UserId};
+use ruma::{
+    events::room::message::{Relation, TextMessageEventContent},
+    RoomId, UserId,
+};
 use spellcheck::spellcheck;
 use std::time::SystemTime;
 use tokio::sync::mpsc::Sender;
@@ -23,6 +26,7 @@ use unit_conversion::unit_conversion;
 /// Handler for all text based non-command events
 pub(super) async fn commandless_handler(
     text: &TextMessageEventContent,
+    relates_to: Option<&Relation>,
     sender: &UserId,
     room_id: &RoomId,
     storage: &mut ListenerStorage,
@@ -90,7 +94,7 @@ pub(super) async fn commandless_handler(
                     };
                 }
                 if config.enable_corrections
-                    && text.relates_to.is_none()
+                    && relates_to.is_none()
                     && storage.correction_time_cooldown(room_id)
                     && !config.correction_exclusion.contains(room_id)
                     && !notice_response.is_some()

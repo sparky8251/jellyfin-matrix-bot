@@ -7,7 +7,7 @@ use crate::messages::MatrixMessage;
 use ruma::{
     api::client::r0::sync::sync_events,
     events::{
-        room::message::{MessageEventContent, Relation},
+        room::message::{MessageEventContent, MessageType, Relation},
         AnyStrippedStateEvent, AnySyncMessageEvent, AnySyncRoomEvent, SyncMessageEvent,
     },
     presence::PresenceState,
@@ -74,17 +74,23 @@ impl MatrixListener {
                             match event {
                                 Ok(AnySyncRoomEvent::Message(
                                     AnySyncMessageEvent::RoomMessage(SyncMessageEvent {
-                                        content: MessageEventContent::Text(t),
+                                        content:
+                                            MessageEventContent {
+                                                msgtype: MessageType::Text(t),
+                                                relates_to,
+                                                ..
+                                            },
                                         sender,
                                         ..
                                     }),
                                 )) => {
-                                    if matches!(t.relates_to, Some(Relation::Replacement(_))) {
+                                    if matches!(relates_to, Some(Relation::Replacement(_))) {
                                         debug!("Message is an edit, skipping handling");
                                         continue;
                                     }
                                     handle_text_event(
                                         &t,
+                                        relates_to.as_ref(),
                                         &sender,
                                         room_id,
                                         &mut self.storage,
